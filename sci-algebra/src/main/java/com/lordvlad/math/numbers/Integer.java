@@ -8,6 +8,14 @@ public class Integer extends Number<Integer> {
 		this.d = d;
 	}
 
+	public static Integer of (java.lang.Integer d) {
+		return new Integer(d);
+	}
+	
+	public static Integer of (int d) {
+		return of((java.lang.Integer) d);
+	}
+	
 	public Integer times(Integer that) {
 		return new Integer(this.d * that.d);
 	}

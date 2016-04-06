@@ -1,11 +1,16 @@
 package com.lordvlad.tensors;
 
+import java.io.Serializable;
+
+
 /**
- * Hello world!
+ * 
+ * @author wre
  *
  */
-public final class IntegerTensor extends AbstractTensor
+public class IntegerTensor extends AbstractTensor implements Tensor<Integer>, Serializable
 {
+	private static final long serialVersionUID = 1947876806789807762L;
 	final int[] data;
 
 	public IntegerTensor(final int[] data, final int ... shape) {
@@ -13,15 +18,15 @@ public final class IntegerTensor extends AbstractTensor
 		this.data = data;
 	}
 	
-	public int get(int... pos) {
+	public Integer get(int... pos) {
 		return data[index(pos)];
 	}
 	
-	public int set(int x, int... pos) {
+	public Integer set(Integer x, int... pos) {
 		return data[index(pos)] = x;
 	}
 	
-	public IntegerTensor times(IntegerTensor other) {
+	public IntegerTensor hadamardProduct(IntegerTensor other) {
 		int[] r = new int[size];
 		for (int i=0; i< size; i++) r[i] = data[i] * other.data[i];
 		return new IntegerTensor(r, shape);

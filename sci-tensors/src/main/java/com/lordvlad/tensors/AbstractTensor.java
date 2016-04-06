@@ -1,11 +1,17 @@
 package com.lordvlad.tensors;
 
-abstract public class AbstractTensor {
+import static com.google.common.truth.Truth.*;
+
+import java.util.Arrays;
+
+public abstract class AbstractTensor  {
 
 	protected int dimensions;
 	protected int size;
 	protected int[] shape;
 	protected int[] stride;
+	
+	protected AbstractTensor() {}
 
 	protected AbstractTensor(int ...shape) {
 		this.shape = shape;
@@ -20,23 +26,31 @@ abstract public class AbstractTensor {
 		this.size = size;
 	}
 
-	protected int index(int[] pos) {
+	protected int index(int ... pos) {
 		int j = 0;
 		for (int i = 0; i < pos.length; i++) {
 			j += this.stride[i] * pos[i];
 		}
-		return j;			
+		if (j >= this.size) {
+			throw new RuntimeException("Position out of bounds: " + Arrays.toString(pos) + " - " + j + " " + Arrays.toString(this.shape) + "(" + Arrays.toString(this.stride)+")");
+		}
+		return j;
 	}
 
-	protected int dimensions() {
+	public int dimensions() {
 		return dimensions;
 	}
 
-	protected int[] shape() {
+	public int[] shape() {
 		return shape;
 	}
 
-	protected int size() {
+	public int size() {
 		return size;
 	}
+
+	protected static void assertSameShape(Tensor<?> one, Tensor<?> other) throws AssertionError {
+		assertThat(one.shape()).isEqualTo(other.shape());		
+	}
+	
 }

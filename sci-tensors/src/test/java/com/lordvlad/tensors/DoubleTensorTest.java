@@ -4,7 +4,9 @@ import static org.junit.Assert.*;
 
 import java.util.Random;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class DoubleTensorTest {
 
@@ -29,7 +31,7 @@ public class DoubleTensorTest {
 	}
 
 	@Test
-	public void test_times() {
+	public void test_hadamardProduct() {
 		Random r = new Random();
 		for (int s : sizes) {
 			System.gc();
@@ -42,10 +44,10 @@ public class DoubleTensorTest {
 			}
 
 			long startTime = System.currentTimeMillis();
-			DoubleTensor z = x.times(y);
+			DoubleTensor z = x.hadamardProduct(y);
 			long finishTime = System.currentTimeMillis();
 			System.out.printf("Multiplication of a double tensor (%dx%d) took %dms%n", s, s, finishTime - startTime);
-
+			
 			assertEquals(s * s, z.size());
 			assertEquals(2, z.dimensions());
 			assertArrayEquals(new int[] { s, s }, z.shape());
@@ -53,7 +55,46 @@ public class DoubleTensorTest {
 			for (int i = 0; i < s * s; i++) {
 				assertEquals(x.data[i] * y.data[i], z.data[i], EPSILON);
 			}
+
+			x = null;
+			y = null;
+			z = null;
+			
+			System.gc();
+
+			double[][] a = new double[s][s];
+			double[][] b = new double[s][s];
+			
+			for (int i = 0; i < s; i++) {
+				for (int j = 0; j< s; j++) {
+					a[i][j] = r.nextDouble();
+					b[i][j] = r.nextDouble();
+				}
+			}
+
+			startTime = System.currentTimeMillis();
+			double[][] c = new double[s][s];
+			for (int i= 0; i<s; i++) {
+				for (int j = 0; j < s; j++) {
+					c[i][j] = a[i][j] * b[i][j];
+				}
+			}
+			finishTime = System.currentTimeMillis();
+			System.out.printf("Multiplication of an array of arrays of doubles (%dx%d) took %dms%n", s, s, finishTime - startTime);
 		}
+	}
+	
+	@Rule
+    public ExpectedException thrown = ExpectedException.none();
+	
+	@Test
+	public void test_hadamardProduct_not_matching_dimensions(){
+		DoubleTensor x = new DoubleTensor(new double[2], 1, 2);
+		DoubleTensor y = new DoubleTensor(new double[2], 2, 1);
+	
+		thrown.expect(AssertionError.class);
+		x.hadamardProduct(y);
+		
 	}
 
 }

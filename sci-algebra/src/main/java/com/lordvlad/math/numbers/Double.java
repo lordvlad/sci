@@ -12,6 +12,10 @@ public class Double extends Number<Double> {
 	public static Double of(java.lang.Double d) {
 		return new Double(d);
 	}
+	
+	public static Double of(double d) {
+		return of((java.lang.Double) d);
+	}
 
 	public Double times(Double that) {
 		return new Double(this.d * that.d);
@@ -58,5 +62,9 @@ public class Double extends Number<Double> {
 	@Override
 	public String toString() {
 		return String.valueOf(d);
+	}
+
+	public Double times(double e) {
+		return new Double(d * e);
 	}
 }

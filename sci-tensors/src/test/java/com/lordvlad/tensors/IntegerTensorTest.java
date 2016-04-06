@@ -18,6 +18,7 @@ public class IntegerTensorTest {
 		assertEquals(2, x.dimensions());
 		assertArrayEquals(new int[] { 2, 2 }, x.shape());
 		assertEquals(0, x.get(0, 0));
+		assertEquals(0, x.get(0, 0));
 		assertEquals(0, x.get(1, 0));
 		assertEquals(0, x.get(0, 1));
 		assertEquals(0, x.get(1, 1));
@@ -28,7 +29,7 @@ public class IntegerTensorTest {
 	}
 
 	@Test
-	public void test_times() {
+	public void test_hadamardProduct() {
 		Random r = new Random();
 		for (int s : sizes) {
 			System.gc();
@@ -41,7 +42,7 @@ public class IntegerTensorTest {
 			}
 
 			long startTime = System.currentTimeMillis();
-			IntegerTensor z = x.times(y);
+			IntegerTensor z = x.hadamardProduct(y);
 			long finishTime = System.currentTimeMillis();
 			System.out.printf("Multiplication of an integer tensor (%dx%d) took %dms%n", s, s, finishTime - startTime);
 
@@ -53,6 +54,10 @@ public class IntegerTensorTest {
 				assertEquals(x.data[i] * y.data[i], z.data[i]);
 			}
 		}
+	}
+	
+	public static void assertEquals(int a, Integer b) {
+		assertTrue(a == b);
 	}
 
 }

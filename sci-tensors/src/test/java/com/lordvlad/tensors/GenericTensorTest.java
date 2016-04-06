@@ -9,14 +9,18 @@ import org.junit.Test;
 import com.lordvlad.math.numbers.BigDecimal;
 
 
-public class TensorTest {
+public class GenericTensorTest {
 
 	private static final int[] sizes = new int[] { 2, 10, 100, 1000 };
 	private static final Random RND = new Random();
 
+	private static BigDecimal randomBigDecimal() {
+		return BigDecimal.of(RND.nextDouble());
+	}
+	
 	@Test
 	public void test_construct() {
-		Tensor<BigDecimal> x = new Tensor<BigDecimal>(BigDecimal.class, 2, 2);
+		GenericTensor<BigDecimal> x = new GenericTensor<BigDecimal>(BigDecimal.class, 2, 2);
 
 		assertEquals(4, x.size());
 		assertEquals(2, x.dimensions());
@@ -32,11 +36,12 @@ public class TensorTest {
 	}
 
 	@Test
-	public void test_times() {
+	public void test_hadamardProduct_bigDecimal() {
 		for (int s : sizes) {
 			System.gc();
-			Tensor<BigDecimal> x = new Tensor<BigDecimal>(BigDecimal.class, s, s);
-			Tensor<BigDecimal> y = new Tensor<BigDecimal>(BigDecimal.class, s, s);
+			
+			GenericTensor<BigDecimal> x = new GenericTensor<BigDecimal>(BigDecimal.class, s, s);
+			GenericTensor<BigDecimal> y = new GenericTensor<BigDecimal>(BigDecimal.class, s, s);
 
 			for (int i = 0; i < s; i++) {
 				for (int j = 0; j < s; j++) {
@@ -46,7 +51,7 @@ public class TensorTest {
 			}
 
 			long startTime = System.currentTimeMillis();
-			Tensor<BigDecimal> z = x.times(y);
+			GenericTensor<BigDecimal> z = x.hadamardProduct(y);
 			long finishTime = System.currentTimeMillis();
 			System.out.printf("Multiplication of an big decimal tensor (%dx%d) took %dms%n", s, s, finishTime - startTime);
 
@@ -59,14 +64,32 @@ public class TensorTest {
 					assertTrue(x.get(i,j).times(y.get(i,j)).equals(z.get(i,j)));
 				}
 			}
+			
+			x = null;
+			y = null;
+			z = null;
+			
+			System.gc();
+			
+			BigDecimal[][] a = new BigDecimal[s][s];
+			BigDecimal[][] b = new BigDecimal[s][s];
+			
+			for (int i = 0; i < s; i++) {
+				for (int j = 0; j < s; j++) {
+					a[i][j] = randomBigDecimal();
+					b[i][j] = randomBigDecimal();
+				}
+			}
+			
+			startTime = System.currentTimeMillis();
+			BigDecimal[][] c = new BigDecimal[s][s];
+			for (int i= 0; i<s; i++) {
+				for (int j = 0; j < s; j++) {
+					c[i][j] = a[i][j].times(b[i][j]);
+				}
+			}
+			finishTime = System.currentTimeMillis();
+			System.out.printf("Multiplication of an array of arrays of big decimals (%dx%d) took %dms%n", s, s, finishTime - startTime);
 		}
-	}
-
-	/**
-	 * @param r
-	 * @return
-	 */
-	private static BigDecimal randomBigDecimal() {
-		return BigDecimal.of(RND.nextDouble());
 	}
 }
