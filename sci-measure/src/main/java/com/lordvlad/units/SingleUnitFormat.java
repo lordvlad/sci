@@ -15,7 +15,7 @@ class SingleUnitFormat extends UnitFormat
 		this.system = system;
 	}
 	
-	public static <S extends SystemOfUnits> SingleUnitFormat getInstance(S system) {
+	public static SingleUnitFormat getInstance(SystemOfUnits system) {
 		return new SingleUnitFormat(system);
 	}
 	

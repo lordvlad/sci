@@ -6,11 +6,13 @@ import java.text.ParsePosition;
 public abstract class UnitFormat extends Format {
 	
 	private static final long serialVersionUID = 2642066919572053470L;
-	private static UnitFormat INSTANCE = null;
 
+	public static UnitFormat getInstance(SystemOfUnits system) {
+		return CompositeUnitFormat.getInstance(system);
+	}
+	
 	public static UnitFormat getInstance() {
-		if (INSTANCE == null) INSTANCE = new CompositeUnitFormat();
-		return INSTANCE;
+		return CompositeUnitFormat.getInstance();
 	}
 
 	protected ParsePosition inc(ParsePosition pos) {

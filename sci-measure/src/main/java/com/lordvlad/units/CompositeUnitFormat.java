@@ -8,8 +8,18 @@ class CompositeUnitFormat extends UnitFormat{
 
 	private static final long serialVersionUID = -1972592388421822511L;
 	private static final String E_FORMAT_NOT_A_UNIT = null;
+	private static CompositeUnitFormat INSTANCE = null;
 	private final NumberFormat num;
 	private final SingleUnitFormat single;
+	
+	public static CompositeUnitFormat getInstance(SystemOfUnits system) {
+		return new CompositeUnitFormat(system);
+	}
+	
+	public static CompositeUnitFormat getInstance() {
+		if (INSTANCE == null) INSTANCE = new CompositeUnitFormat(SI.getInstance());
+		return INSTANCE;
+	}
 	
 	CompositeUnitFormat() {
 		this(SI.getInstance());
@@ -72,6 +82,8 @@ class CompositeUnitFormat extends UnitFormat{
 			else if ('/' == c) u = u.over((Unit<?>) parseObject(source, inc(pos)));
 			else if ('^' == c) u = u.pow(num.parse(source, inc(pos)).intValue());			 
 			else break;
+			
+			if (u == null) return null;
 		}		
 		
 		return u;

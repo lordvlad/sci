@@ -9,7 +9,7 @@ import com.lordvlad.quantities.Quantity;
 import com.lordvlad.quantities.ThermodynamicTemperature;
 import com.lordvlad.quantities.Time;
 
-public final class SI extends SystemOfUnits {
+public class SI extends SystemOfUnits {
 	protected static SystemOfUnits INSTANCE = null;
 
 	static SystemOfUnits getInstance() {
