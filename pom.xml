@@ -8,11 +8,15 @@
 	<packaging>pom</packaging>
 
 	<name>sci</name>
-	<url>http://maven.apache.org</url>
-
+	<url>https://github.com/lordvlad/sci</url>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
+	<scm>
+		<url>git@github.com:lordvlad/sci.git</url>
+	</scm>
 
 	<distributionManagement>
 		<site>
@@ -22,6 +26,13 @@
 		</site>
 	</distributionManagement>
 
+	<modules>
+		<module>sci-utils</module>
+		<module>sci-measure</module>
+		<module>sci-tensors</module>
+		<module>sci-algebra</module>
+	</modules>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -30,13 +41,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<modules>
-
-		<module>sci-utils</module>
-		<module>sci-measure</module>
-		<module>sci-tensors</module>
-		<module>sci-algebra</module>
-	</modules>
 
 	<build>
 		<pluginManagement>
