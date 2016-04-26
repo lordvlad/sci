@@ -1,74 +1,76 @@
 package com.lordvlad.units;
 
 import java.io.Serializable;
+import java.util.function.Function;
 
 import com.lordvlad.quantities.Quantity;
-import com.lordvlad.structures.Lambda;
 
 class ScaledUnit<Q extends Quantity> extends Unit<Q> implements Serializable {
 	private static final long serialVersionUID = -5488981475737797350L;
+
 	final Unit<Q> baseUnit;
 	final double scale;
-	final String symbol;
-	private Lambda<Double, Double> toBaseUnitLambda;
-	private Lambda<Double, Double> fromBaseUnitLambda;
 
-	ScaledUnit(ScaledUnit<Q> a, Scale s)
-	{
-		this(a.baseUnit, MetricScale.scalings.get(a.scale*s.scaling));
-	}
-	
-	ScaledUnit(Unit<Q> a, Scale s) {
-		this(a, s.prefix + a.toString(), s.scaling);
-	}
-	
-	ScaledUnit(Unit<Q> a, String symbol, double scale) {
-		if (a instanceof ScaledUnit) {
-			ScaledUnit<Q> o = (ScaledUnit<Q>) a;
-			this.baseUnit = o.baseUnit;
-			this.scale = o.scale * scale;
-		} else {
-			this.baseUnit = a;
-			this.scale = scale;
+	private Function<Double, Double> toBaseUnitLambda;
+	private Function<Double, Double> fromBaseUnitLambda;
+
+	static <T extends Quantity> Unit<T> of(Unit<T> baseUnit, Scale scale) {
+		if (baseUnit instanceof ScaledUnit) {
+			ScaledUnit<T> base = (ScaledUnit<T>) baseUnit;
+			Scale s = MetricScale.of(base.scale * scale.scaling);
+			return s == null ? of(base.baseUnit, base.scale * scale.scaling) : of(base.baseUnit, s);
 		}
-		this.symbol = symbol;
-	}
-	
-	ScaledUnit(ScaledUnit<Q> a, String symbol, double scale) {
-		this(a.baseUnit, symbol, a.scale * scale);
+		return new ScaledUnit<T>(baseUnit, scale);
 	}
 
-	@Override
-	String getSymbol() {
-		return this.symbol;
+	static <T extends Quantity> Unit<T> of(Unit<T> baseUnit, double scale) {
+		if (baseUnit instanceof ScaledUnit) {
+			ScaledUnit<T> base = (ScaledUnit<T>) baseUnit;
+			return of(base.baseUnit, base.scale * scale);
+		}
+		return new ScaledUnit<T>(baseUnit, scale);
 	}
 
-	
+	private ScaledUnit(Unit<Q> baseUnit, Scale scale) {
+		super(scale.prefix + baseUnit.toString());
+		this.baseUnit = baseUnit;
+		this.scale = scale.scaling;
+	}
+
+	private ScaledUnit(Unit<Q> baseUnit, double scale) {
+		super(scale + " * " + baseUnit.toString());
+		this.baseUnit = baseUnit;
+		this.scale = scale;
+	}
 
 	@Override
 	Unit<Q> getBaseUnit() {
 		return baseUnit;
 	}
 
-	@Override Lambda<Double, Double> toBaseUnit() {
-		if (toBaseUnitLambda == null) toBaseUnitLambda = new Lambda<Double, Double>(){
+	@Override
+	Function<Double, Double> toBaseUnit() {
+		if (toBaseUnitLambda == null)
+			toBaseUnitLambda = new Function<Double, Double>() {
 
-			public Double call(Double a) {
-				return a* scale;
-			}
-			
-		};
+				public Double apply(Double a) {
+					return a * scale;
+				}
+
+			};
 		return toBaseUnitLambda;
 	}
 
-	@Override Lambda<Double, Double> fromBaseUnit() {
-		if (fromBaseUnitLambda == null) fromBaseUnitLambda = new Lambda<Double, Double>(){
+	@Override
+	Function<Double, Double> fromBaseUnit() {
+		if (fromBaseUnitLambda == null)
+			fromBaseUnitLambda = new Function<Double, Double>() {
 
-			public Double call(Double a) {
-				return a/scale;
-			}
-			
-		};
+				public Double apply(Double a) {
+					return a / scale;
+				}
+
+			};
 		return fromBaseUnitLambda;
 	}
 
@@ -101,6 +103,12 @@ class ScaledUnit<Q extends Quantity> extends Unit<Q> implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
+
+	@Override
+	protected Unit<Q> clone() throws CloneNotSupportedException {
+		ScaledUnit<Q> u = new ScaledUnit<>(baseUnit, scale);
+		u.symbol = symbol;
+		return u;
+	}
+
 }

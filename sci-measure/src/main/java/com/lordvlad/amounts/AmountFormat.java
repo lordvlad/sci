@@ -2,10 +2,10 @@ package com.lordvlad.amounts;
 
 import java.text.FieldPosition;
 import java.text.Format;
+import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Locale;
 
-import com.lordvlad.math.numbers.Number;
 import com.lordvlad.math.numbers.NumberWithErrorFormat;
 import com.lordvlad.units.Unit;
 import com.lordvlad.units.UnitFormat;
@@ -26,7 +26,7 @@ public class AmountFormat extends Format{
 		this.uf = unitInstance;
 	}
 
-	public AmountFormat() {
+	private AmountFormat() {
 		this(Locale.US);
 	}
 
@@ -36,7 +36,7 @@ public class AmountFormat extends Format{
 		if (!(obj instanceof Amount)) {
 			throw new IllegalArgumentException(String.format(E_NOT_AMOUNT, obj.getClass()));
 		}
-		Amount<?, ?> amount = (Amount<?, ?>) obj;
+		Amount< ?> amount = (Amount<?>) obj;
 		nf.format(amount.getAmount(), toAppendTo, pos);
 		appendSpace(toAppendTo);
 		uf.format(amount.getUnit(), toAppendTo, pos);
@@ -54,10 +54,14 @@ public class AmountFormat extends Format{
 	
 	@Override
 	public Object parseObject(final String source, final ParsePosition pos) {
-		final Number<?> n = (Number<?>) Number.of(nf.parseObject(source, pos));
+		final Number n = (Number) nf.parseObject(source, pos);
 		skipSpace(source, pos);
 		final Unit<?> u = (Unit<?>) uf.parseObject(source, pos);
 		return Amount.of(n, u);
+	}
+	
+	public Amount<?> parse(final String source) throws ParseException {
+		return (Amount<?>) parseObject(source);
 	}
 	
 	/**

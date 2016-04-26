@@ -1,7 +1,7 @@
 package com.lordvlad.tensors;
 
-import com.lordvlad.math.numbers.Number;
+import com.lordvlad.math.numbers.NumBase;
 
-public interface NumberTensor<T extends Number<T>> extends Tensor<T>{
+public interface NumberTensor<T extends NumBase<T>> extends Tensor<T>{
 	
 }

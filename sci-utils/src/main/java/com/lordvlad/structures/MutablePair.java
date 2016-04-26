@@ -1,5 +1,12 @@
 package com.lordvlad.structures;
 
+/**
+ * A {@link Pair} where the members can be exchanged.
+ * @author wre
+ *
+ * @param <A>
+ * @param <B>
+ */
 public class MutablePair<A, B> extends Pair<A, B> {
 
 	private static final long serialVersionUID = 1217461445125231119L;

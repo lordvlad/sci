@@ -7,7 +7,7 @@ import java.util.Formatter;
 
 import com.lordvlad.utils.Symbols;
 
-public class NumberWithError<N extends Number<N>> extends Number<NumberWithError<N>> implements Formattable {
+public class NumberWithError extends Number implements Formattable {
 
 	private static final long serialVersionUID = 226887904455377004L;
 
@@ -15,14 +15,11 @@ public class NumberWithError<N extends Number<N>> extends Number<NumberWithError
 	private static final String E_VAL_NULL = "value is NULL";
 	private static final String E_ERR_NULL = "error is NULL";
 
-	final N val;
-	final N err;
+	final Number val;
+	final Number err;
 
-	public static NumberWithError<Double> of (double val, double err) {
-		return of(Double.of(val), Double.of(err));
-	}
 	
-	public static <M extends Number<M>> NumberWithError<M> of(M val, M err) {
+	public static NumberWithError of(Number val, Number err) {
 		if (val == null)
 			throw new IllegalArgumentException(E_VAL_NULL);
 		if (err == null)
@@ -30,10 +27,10 @@ public class NumberWithError<N extends Number<N>> extends Number<NumberWithError
 		if (err.doubleValue() < 0)
 			throw new IllegalArgumentException(E_ERR_LESS_THAN_ZERO);
 
-		return new NumberWithError<M>(val, err);
+		return new NumberWithError(val, err);
 	}
 
-	private NumberWithError(N val, N err) {
+	private NumberWithError(Number val, Number err) {
 		this.val = val;
 		this.err = err;
 	}
@@ -89,10 +86,10 @@ public class NumberWithError<N extends Number<N>> extends Number<NumberWithError
 		if (!(obj instanceof Number))
 			return false;
 		if (!(obj instanceof NumberWithError)) {
-			Number<?> other = (Number<?>) obj;
+			Number other = (Number) obj;
 			return minValue() <= other.doubleValue() && other.doubleValue() <= maxValue();
 		}
-		NumberWithError<?> other = (NumberWithError<?>) obj;
+		NumberWithError other = (NumberWithError) obj;
 		return maxValue() >= other.minValue() && maxValue() <= other.maxValue()
 				|| minValue() >= other.minValue() && minValue() <= other.maxValue();
 	}
@@ -116,21 +113,11 @@ public class NumberWithError<N extends Number<N>> extends Number<NumberWithError
 		}
 	}
 
-	public NumberWithError<N> times(NumberWithError<N> that) {
-		return new NumberWithError<N>(val.times(that.val), err.times(that.err));
+
+	public int compareTo(NumberWithError o) {
+		return Op.compare(val, o.val);
 	}
 
-	public NumberWithError<N> plus(NumberWithError<N> that) {
-		return new NumberWithError<N>(val.plus(that.val), err.plus(that.err));
-	}
-
-	public NumberWithError<N> opposite() {
-		return new NumberWithError<N>(val.opposite(), err.opposite());
-	}
-
-	public int compareTo(NumberWithError<N> o) {
-		return val.compareTo(o.val);
-	}
-
+	
 
 }

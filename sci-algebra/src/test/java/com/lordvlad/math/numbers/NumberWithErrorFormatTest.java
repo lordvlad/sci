@@ -33,7 +33,7 @@ public class NumberWithErrorFormatTest {
 		assertEquals(NumberWithError.of(2e10, 0.1), nf.parseObject("2E10 \u00b1 0.1"));
 		assertEquals(NumberWithError.of(1.0, 1e-10), nf.parseObject("1 \u00b1 1E-10"));
 		assertEquals(NumberWithError.of(2e7, 1e-10), nf.parseObject("2E7 \u00b1 1E-10"));
-		assertEquals(Number.of(20000000L), nf.parseObject("2E7"));
+		assertEquals(Long.valueOf(20000000L), nf.parseObject("2E7"));
 	}
 	
 	@Test

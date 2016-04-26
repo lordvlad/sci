@@ -3,112 +3,94 @@ package com.lordvlad.math.numbers;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 
-import com.lordvlad.math.structures.Multiplicative;
+final public class Fraction extends Number {
+	long num;
+	long denom;
 
-public class Fraction extends Number<Fraction> implements Multiplicative<Fraction>{
+
 	private static final long serialVersionUID = 3040650164805113194L;
-	
-	private static int commonDenominator(Fraction one, Fraction other) {
-		// FIXME use some nice LCM here
-		return one.denom * other.denom;
+	public static final Fraction ONE = new Fraction(1, 1);
+	public static final Fraction ZERO = new Fraction(0, 1);
+
+	protected Fraction(long n, long d) {
+		this.num = n;
+		this.denom = d;
 	}
-	
-	/** @return the greatest common denominator */
-	public static int gcm(int a, int b) {
+
+	/**
+	 * @return the greatest common denominator
+	 */
+	private static long gcd(long a, long b) {
 		while (a != 0 && b != 0) {
-			if (a > b) {a = a % b;} else {b = b % a;}
+			if (Op.gt(a, b)) {
+				a = Op.remainder(a, b);
+			} else {
+				b = Op.remainder(b, a);
+			}
 		}
-	    return a;
+		return a;
 	}
-	
-	public static Fraction reduce(Fraction some) {
-		int gcm = gcm(some.num, some.denom);
-		return new Fraction(some.num / gcm, some.denom / gcm);
+
+	static Number commonDenominator(Fraction one, Fraction other) {
+		// FIXME use some nice LCM here
+		if (one.denom == other.denom)
+			return one.denom;
+		return Op.mul(one.denom, other.denom);
 	}
-	
-	public static Fraction of(String s) {
+
+	public static Fraction of(long a, long b)  {
+		if (a == 0)
+			return ZERO;
+		if (a == 1 && b == 1) return ONE;
+		if (b == 0)
+			throw Op.divisionByZero();
+		final long gcd = gcd(a, b);
+		final long n = a/gcd;
+		final long d = b/gcd;
+		return new Fraction(n, d);
+	}
+
+
+	public static Number of(String s) {
 		ParsePosition pos = new ParsePosition(0);
-		int a = NumberFormat.getIntegerInstance().parse(s, pos).intValue();
+		long a = NumberFormat.getIntegerInstance().parse(s, pos).longValue();
 		if (pos.getIndex() < s.length() && s.charAt(pos.getIndex()) == '/') {
-			pos.setIndex(pos.getIndex()+1);
-			int b = NumberFormat.getIntegerInstance().parse(s, pos).intValue();
-			return Fraction.of(a, b);
+			pos.setIndex(pos.getIndex() + 1);
+			long b = NumberFormat.getIntegerInstance().parse(s, pos).longValue();
+			return of(a, b);
 		}
-		return Fraction.of(a);
-	}
-	
-	public static Fraction of(int a) {
-		return new Fraction(a, 1);
-	}
-	
-	public static Fraction of(int a, int b) {
-		return new Fraction(a, b);
-	}
-	
-	private final int denom;
-	private final int num;
-	
-	Fraction(int num, int denom) {
-		this.num = num;
-		this.denom = denom;
+		return of(a, 1);
 	}
 
-	public Fraction times(Fraction that) {
-		return new Fraction(this.num * that.num, this.denom * that.denom);
-	}
 
-	public Fraction plus(Fraction that) {
-		int ndenom = commonDenominator(this, that);
-		int nnum = (ndenom/denom) * num + (ndenom/that.denom) * that.num;
-		
-		return new Fraction(nnum, ndenom);
-	}
-
-	public Fraction opposite() {
-		return new Fraction(-this.num, this.denom);
-	}
-
-	public int compareTo(Fraction o) {
-		return java.lang.Double.compare(this.doubleValue(), o.doubleValue());
-	}
+	
 
 	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof Fraction
-				&& this.num == ((Fraction)obj).num
-				&& this.denom == ((Fraction)obj).denom;
-	}
-
-	@Override
-	public int intValue() {
-		return new Double(doubleValue()).intValue();
-	}
-
-	@Override
-	public long longValue() {
-		return (long) intValue();
+	public double doubleValue() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
 	public float floatValue() {
-		return (float) doubleValue();
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
-	public double doubleValue() {
-		return this.num / this.denom;
+	public int intValue() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
-	public String toString() {
-		return String.format("%d/%d", this.num, this.denom);
+	public long longValue() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
-	public Fraction inverse() {
-		return new Fraction(this.denom, this.num);
+	public static Fraction of(int i) {
+		return of(i, 1);
 	}
-	
-	public Fraction over(Fraction other) {
-		return this.times(other.inverse());
-	}
+
 }

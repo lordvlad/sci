@@ -15,7 +15,7 @@ class Scale implements Serializable{
 	}
 
 	public <Q extends Quantity> Unit<Q> scale(Unit<Q> u) {
-		return new ScaledUnit<Q>(u, this);
+		return ScaledUnit.of(u, this);
 	}
 
 	@Override

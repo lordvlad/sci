@@ -54,5 +54,8 @@ public class MetricScale {
 	public static final <Q extends Quantity> Unit<Q> FEMTO(Unit<Q> u) { return FEMTO.scale(u); }
 	public static final <Q extends Quantity> Unit<Q> ATTO(Unit<Q> u) { return ATTO.scale(u); }
 	
-	
+
+	public static Scale of(Double i) {
+		return scalings.get((Double) i);
+	}
 }

@@ -1,54 +1,58 @@
 package com.lordvlad.amounts;
 
-import com.lordvlad.math.numbers.Double;
-import com.lordvlad.math.numbers.Long;
-import com.lordvlad.math.numbers.Number;
+import com.lordvlad.math.numbers.Num;
 import com.lordvlad.math.numbers.NumberWithError;
+import com.lordvlad.math.numbers.Op;
 import com.lordvlad.quantities.Quantity;
-import com.lordvlad.structures.MutablePair;
+import com.lordvlad.structures.Pair;
 import com.lordvlad.units.Unit;
-import com.lordvlad.utils.MeasureUtils;
 
-public class Amount<T extends Number<T>, Q extends Quantity> extends MutablePair<Number<T>, Unit<Q>> {
+public class Amount<Q extends Quantity> extends Pair<Number, Unit<Q>> implements Num<Amount<Q>>{
 
 	private static final long serialVersionUID = 252947783626459366L;
 	private static final String E_UNIT_NULL = "unit is null";
 	private static final String E_NUM_NULL = "numeric value is nulll";
-	
-	public static <N extends Number<N>, S extends Quantity> Amount<N, S> of (Number<N> a, Unit<S> b) {
-		if (a == null) throw new IllegalArgumentException(E_NUM_NULL);
-		if (b == null) throw new IllegalArgumentException(E_UNIT_NULL);
-		return new Amount<N, S>(a, b);
+
+	public static <S extends Quantity> Amount<S> of(Number a, Unit<S> b) {
+		if (a == null)
+			throw new IllegalArgumentException(E_NUM_NULL);
+		if (b == null)
+			throw new IllegalArgumentException(E_UNIT_NULL);
+		return new Amount<S>(a, b);
 	}
-	
-	public static <S extends Quantity> Amount<NumberWithError<Double>, S> of (double a1, double a2, Unit<S> b) {
+
+	public static <S extends Quantity> Amount<S> of(double a1, double a2, Unit<S> b) {
 		return of(NumberWithError.of(a1, a2), b);
 	}
-	
-	public static <S extends Quantity> Amount<Long, S> of (long a, Unit<S> b)
-	{
-		return of(Long.of(a), b);
+
+	public static <S extends Quantity> Amount<S> of(double a, Unit<S> b) {
+		return of(Double.valueOf(a), b);
 	}
-	
-	public static <S extends Quantity> Amount<Double, S> of (double a, Unit<S> b) {
-		return of(Double.of(a), b);
-	}
-	
-	public static <N extends Number<N>, S extends Quantity> Amount<NumberWithError<N>, S> of (N a1, N a2, Unit<S> b) {
+
+	public static <S extends Quantity> Amount<S> of(Number a1, Number a2, Unit<S> b) {
 		return of(NumberWithError.of(a1, a2), b);
 	}
-	
-	private Amount(Number<T> a, Unit<Q> b) {
+
+	private Amount(Number a, Unit<Q> b) {
 		super(a, b);
 	}
-	public Number<T> getAmount(){ return a; }
-	public Unit<Q> getUnit(){ return b; }
-	
+
+	public Number getAmount() {
+		return a;
+	}
+
+	public Unit<Q> getUnit() {
+		return b;
+	}
+
 	@Override
 	public String toString() {
-		return String.valueOf(a) + ' ' + String.valueOf(b);
+		String u = String.valueOf(b);
+		if (u != null && !u.isEmpty())
+			u = ' ' + u;
+		return String.valueOf(a) + u;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -59,11 +63,11 @@ public class Amount<T extends Number<T>, Q extends Quantity> extends MutablePair
 			return false;
 		try {
 			@SuppressWarnings("unchecked")
-			Amount<T, Q> other = (Amount<T, Q>) obj;
+			Amount<Q> other = (Amount<Q>) obj;
 			if (a == null) {
 				if (other.a != null)
 					return false;
-			} else if (!MeasureUtils.equals(a, other.a))
+			} else if (!Op.equals(a, other.a))
 				return false;
 			if (b == null) {
 				if (other.b != null)
@@ -75,11 +79,44 @@ public class Amount<T extends Number<T>, Q extends Quantity> extends MutablePair
 			return false;
 		}
 	}
-	
-	@Override
-	public int hashCode() {
-		return super.hashCode();
+
+	public Amount<Q> to(Unit<Q> u) {
+		return (Amount<Q>) of(getUnit().to(u).apply(getAmount().doubleValue()), u);
 	}
-	
-	
+
+	@Override
+	public Amount<Q> plus(Amount<Q> o) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Amount<Q> inverse() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Amount<Q> times(Amount<Q> o) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Amount<Q> opposite() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Amount<Q> minus(Amount<Q> o) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Amount<Q> over(Amount<Q> o) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

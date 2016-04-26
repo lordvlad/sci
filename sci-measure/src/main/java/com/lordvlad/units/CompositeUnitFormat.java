@@ -3,57 +3,59 @@ package com.lordvlad.units;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
-class CompositeUnitFormat extends UnitFormat{
+class CompositeUnitFormat extends UnitFormat {
 
 	private static final long serialVersionUID = -1972592388421822511L;
 	private static final String E_FORMAT_NOT_A_UNIT = null;
 	private static CompositeUnitFormat INSTANCE = null;
 	private final NumberFormat num;
 	private final SingleUnitFormat single;
-	
-	public static CompositeUnitFormat getInstance(SystemOfUnits system) {
-		return new CompositeUnitFormat(system);
+
+	@SafeVarargs
+	public static CompositeUnitFormat getInstance(Class<? extends SystemOfUnits>... systems) {
+		return new CompositeUnitFormat(systems);
 	}
-	
+
 	public static CompositeUnitFormat getInstance() {
-		if (INSTANCE == null) INSTANCE = new CompositeUnitFormat(SI.getInstance());
+		if (INSTANCE == null)
+			INSTANCE = new CompositeUnitFormat(SI.class);
 		return INSTANCE;
 	}
-	
+
 	CompositeUnitFormat() {
-		this(SI.getInstance());
+		this(SI.class);
 	}
-	
-	CompositeUnitFormat(SystemOfUnits system) {
+
+	@SafeVarargs
+	CompositeUnitFormat(Class<? extends SystemOfUnits>... system) {
 		single = SingleUnitFormat.getInstance(system);
 		num = NumberFormat.getInstance();
 		num.setParseIntegerOnly(true);
 	}
-	
+
 	@Override
 	public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
 		return format(obj, toAppendTo, pos, false);
 	}
 
 	private StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos, boolean appendParens) {
-		if (!(obj instanceof Unit)) throw new IllegalArgumentException(E_FORMAT_NOT_A_UNIT);
-		if (obj instanceof ProductUnit) {
-			if (appendParens) append("(", toAppendTo, pos);
-			ProductUnit<?> prod = (ProductUnit<?>) obj;
-			toAppendTo = format(prod.leftUnit, toAppendTo, pos, true);
-			append("*", toAppendTo, pos);
-			toAppendTo = format(prod.rightUnit, toAppendTo, pos, true);
-			if (appendParens) append(")", toAppendTo, pos);
-		} else if (obj instanceof PowerUnit) {
-			PowerUnit<?> pow = (PowerUnit<?>) obj;
-			toAppendTo = format(pow.unit, toAppendTo, pos, true);
-			append("^", toAppendTo, pos);
-			toAppendTo = num.format(pow.power, toAppendTo, pos);
-		} else if (obj != Unit.ONE){
+		if (!(obj instanceof Unit)) {
+			throw new IllegalArgumentException(E_FORMAT_NOT_A_UNIT);
+		} else if (obj instanceof CompositeUnit) {
+			Iterator<Entry<Unit<?>, Integer>> it = ((CompositeUnit<?>)obj).units.entrySet().iterator();
+			while (it.hasNext()) {
+				Entry<Unit<?>, Integer> next = it.next();
+				single.format(next.getKey(), toAppendTo, pos);
+				if (next.getValue() != 1) append("^" + next.getValue(), toAppendTo, pos);
+				if (it.hasNext()) append("*", toAppendTo, pos);
+			}
+		} else {
 			toAppendTo = single.format(obj, toAppendTo, pos);
-		}		
-		
+		}
+
 		return toAppendTo;
 	}
 
@@ -64,30 +66,38 @@ class CompositeUnitFormat extends UnitFormat{
 	}
 
 	@Override
-	public final Object parseObject(String source, ParsePosition pos) {
-		return parseObject(source, pos, 0);
-	}
-
-	private Object parseObject(String source, ParsePosition pos, int openParens) {
+	public Object parseObject(String source, ParsePosition pos) {
 		Unit<?> u = Unit.ONE;
 		Character c = null;
-		
-		while (pos.getIndex() < source.length()) {			
+
+		while (pos.getIndex() < source.length()) {
 			c = source.charAt(pos.getIndex());
-			
-			if ('(' == c) return parseObject(source, inc(pos), openParens + 1);
-			else if (')' == c) {inc(pos); return u;}
-			else if (Character.isAlphabetic(c)) u = (Unit<?>) SingleUnitFormat.getInstance().parseObject(source, pos);
-			else if ('*' == c) u = u.times((Unit<?>) parseObject(source, inc(pos)));
-			else if ('/' == c) u = u.over((Unit<?>) parseObject(source, inc(pos)));
-			else if ('^' == c) u = u.pow(num.parse(source, inc(pos)).intValue());			 
-			else break;
-			
-			if (u == null) return null;
-		}		
-		
+
+			if ('(' == c)
+				return parse(source, inc(pos));
+			else if (')' == c) {
+				inc(pos);
+				return u;
+			} else if ('*' == c)
+				u = u.times(parse(source, inc(pos)));
+			else if ('/' == c)
+				u = u.over(parse(source, inc(pos)));
+			else if ('^' == c)
+				u = u.pow(num.parse(source, inc(pos)).intValue());
+			else if ('²' == c) {
+				inc(pos);
+				u = u.pow(2);
+			} else if ('1' == c) {
+				inc(pos);
+				u = Unit.ONE;
+			} else
+				u = single.parse(source, pos);
+
+			if (u == null)
+				return null;
+		}
+
 		return u;
 	}
-	
-	
+
 }

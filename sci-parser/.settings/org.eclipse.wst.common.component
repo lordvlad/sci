@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="sci-parser">
+        <wb-resource deploy-path="/" source-path="/ejbModule" tag="defaultRootSource"/>
+        <property name="java-output-path" value="/sci-parser/build/classes"/>
+        <property name="ClientProject" value="sci-parser-client"/>
+        <property name="ClientJARURI" value="sci-parser-client.jar"/>
+    </wb-module>
+</project-modules>

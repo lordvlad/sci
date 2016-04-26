@@ -1,21 +1,16 @@
 package com.lordvlad.units;
 
 import java.io.Serializable;
+import java.util.function.Function;
 
 import com.lordvlad.quantities.Quantity;
-import com.lordvlad.structures.Lambda;
 
 final class BaseUnit<Q extends Quantity> extends Unit<Q> implements Serializable{
 	private static final long serialVersionUID = -5311168996363634717L;
-	final String name;
 
-	BaseUnit(String name) {
-		this.name = name;
-	}
-
-	@Override
-	String getSymbol() {
-		return name;
+	
+	BaseUnit(String name, String...aliases) {
+		super(name, aliases);
 	}
 
 	@Override
@@ -23,11 +18,16 @@ final class BaseUnit<Q extends Quantity> extends Unit<Q> implements Serializable
 		return this;
 	}
 
-	@Override Lambda<Double, Double> toBaseUnit() {
+	@Override Function<Double, Double> toBaseUnit() {
 		return noop;
 	}
 
-	@Override Lambda<Double, Double> fromBaseUnit() {
+	@Override Function<Double, Double> fromBaseUnit() {
 		return noop;
+	}
+
+	@Override
+	protected Unit<Q> clone() throws CloneNotSupportedException {
+		return new BaseUnit<Q>(this.symbol, this.aliases);
 	}
 }

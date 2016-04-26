@@ -2,9 +2,9 @@ package com.lordvlad.tensors;
 
 import java.io.Serializable;
 
-import com.lordvlad.math.numbers.Number;
+import com.lordvlad.math.numbers.NumBase;
 
-public class GenericTensor<N extends Number<N>> extends AbstractTensor implements NumberTensor<N>, Serializable{
+public class GenericTensor<N extends NumBase<N>> extends AbstractTensor implements NumberTensor<N>, Serializable{
 	private static final long serialVersionUID = -5539627822538773739L;
 	final Object[] data;
 	final Class<N> cls;
