@@ -3,12 +3,13 @@
 	<name>sci-app</name>
 	<comment></comment>
 	<projects>
-		<project>sci-measure</project>
 		<project>sci-algebra</project>
-		<project>sci-utils</project>
-		<project>sci-tensors</project>
+		<project>sci-measure</project>
 		<project>sci-parser</project>
 		<project>sci-parser-client</project>
+		<project>sci-services</project>
+		<project>sci-tensors</project>
+		<project>sci-utils</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
