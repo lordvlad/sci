@@ -25,7 +25,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
@@ -38,26 +37,22 @@
 		<dependency>
 			<groupId>com.lordvlad</groupId>
 			<artifactId>sci-tensors</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>provided</scope>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.lordvlad</groupId>
 			<artifactId>sci-utils</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>provided</scope>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.lordvlad</groupId>
 			<artifactId>sci-algebra</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>provided</scope>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.lordvlad</groupId>
 			<artifactId>sci-measure</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>provided</scope>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -10,7 +10,6 @@
 	</parent>
 	<artifactId>sci-tensors</artifactId>
 	<name>sci-tensors</name>
-	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -18,12 +17,13 @@
 		<dependency>
 			<groupId>com.lordvlad</groupId>
 			<artifactId>sci-algebra</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.truth</groupId>
 			<artifactId>truth</artifactId>
 			<version>0.28</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ejml</groupId>

@@ -20,8 +20,7 @@ public final class BigDec extends NumBase<BigDec> {
 
 	@Override
 	public BigDec plus(BigDec o) {
-		// TODO Auto-generated method stub
-		return null;
+		return valueOf(n.add(o.n));
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public final class BigDec extends NumBase<BigDec> {
 		return valueOf(BigDecimal.valueOf(n));
 	}
 
-	private static BigDec valueOf(BigDecimal n) {
+	public static BigDec valueOf(BigDecimal n) {
 		return new BigDec(n);
 	}
 

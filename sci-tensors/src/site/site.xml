@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -17,7 +19,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-<project name="${project.name}">
+<project name="${project.name}"  xmlns="https://maven.apache.org/xsd/decoration-1.7.0.xsd">
   <bannerLeft>
     <name>${project.name}</name>
   </bannerLeft>
